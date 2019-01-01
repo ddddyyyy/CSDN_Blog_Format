@@ -13,3 +13,7 @@
  - csdn.header = [('Cookie', yourcookie)]
 5. 运行
  - csdn.run()
+
+---
+如果不想要设置cookie，可以查看该项目的分支https://github.com/ddddyyyy/CSDN_Blog_Format/tree/login
+可以通过使用账号密码登录
