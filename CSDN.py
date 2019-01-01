@@ -84,7 +84,7 @@ def input(self):
     
     def login(self):
         chrome_options = Options()
-        # chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument("--no-sandbox")
         # chrome_options.binary_location = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' self.driver
