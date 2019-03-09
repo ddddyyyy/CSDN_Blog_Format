@@ -9,8 +9,8 @@
  - csdn.output = './'
 3. 设置自己的CSDN账户名
  - csdn.user = ''
-4. 设置自己的登录之后的cookie，可以自己点击一篇自己的文章编辑查看url的header得到，直接一整个复制就行了
- - csdn.header = [('Cookie', yourcookie)]
+4. 设置自己的登录之后的cookie，可以自己点击一篇自己的文章编辑查看url的header得到，找到UserToken和UserInfo其中一个的值，这两个的值都是一样的
+ - csdn.init_header('')
 5. 运行
  - csdn.run()
 
