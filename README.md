@@ -34,7 +34,7 @@ CSDN.py [-h] [-o 文章输出路径] -u 自己的CSDN账户名 -c  CSDN的登录
 ## 使用方法其三，使用[login](https://github.com/ddddyyyy/CSDN_Blog_Format/tree/login)分支的脚本
 
 如果不想要设置cookie，可以查看该项目的分支https://github.com/ddddyyyy/CSDN_Blog_Format/tree/login
-可以通过使用账号密码登录
+,可以通过使用账号密码登录运行脚本。
 
 ---
 
