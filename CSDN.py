@@ -2,11 +2,9 @@ import argparse
 import json
 import logging
 import logging.handlers
+import math
 import os
-import re
 import urllib.request
-
-from lxml import etree
 
 
 # 删除字典数组重复的元素
@@ -27,6 +25,9 @@ class CSDN:
 
         self.header = [
             ('Cookie', '')]
+
+        # 得到所有文章列表的url
+        self.article_list_url = 'https://blog.csdn.net/{0}/phoenix/article/list/'.format(self.user)
 
         # 创建Logger
         self.logger = logging.getLogger()
@@ -58,46 +59,27 @@ class CSDN:
         urllib.request.install_opener(opener)
 
     def get_article_list(self):
-        # 最终所有文章id和日期的数组
-        result_list = []
-
-        # 获得文章链接，由于页面有一些评论的链接，需要过滤掉
-        r_str = '^https\:\/\/blog\.csdn\.net\/{0}\/article\/details\/[0-9]+$'.format(self.user)
-        url_re = re.compile(r_str)
-        # 替换url得到文章的id
-        replace_re = re.compile('^https://blog\.csdn\.net/.+/article/details/')
-
-        j = 1
-        self.logger.info('开始获取文章总数目')
-        # 这里直接使用循环代替页码的获取了，当检索不到数据的时候跳出循环
+        i = 1
+        page_num = 0
+        lists = []
+        # 循环遍历
         while True:
-            r = urllib.request.urlopen(self.blog_url + str(j))
-            html = etree.HTML(r.read())
-
-            # 获得所有的链接
-            u_list = html.xpath('//*[@id="mainBox"]/main//a[@href]')
-            id_list = []
-            for uri in u_list:
-                # '//*[@id="mainBox"]/main/div[2]/div[2]/h4/a'
-                # '//*[@id="mainBox"]/main/div[2]/div[2]/div[1]/p[1]/span'
-                ri = url_re.match(uri.attrib['href'])
-
-                if ri is not None:
-                    # 获取文章id
-                    data = uri.getparent().getparent().xpath('div[1]/p[1]/span')[0].text
-                    id_list.append({'id': replace_re.sub('', uri.attrib['href']), 'data': data})
-            temp_list = delete_duplicate(id_list)
-            # temp_list = id_list
-            if len(temp_list) == 0:
+            response = json.loads(urllib.request.urlopen(self.article_list_url + str(i)).read())
+            if response['status'] is 1:
+                if page_num == 0:
+                    # 得到遍历的次数
+                    page_num = math.ceil(response['data']['total'] / 20)
+                # 得到文章列表
+                article_list = response['data']['article_list']
+                for data in article_list:
+                    # 得到文章的id和创建日期
+                    lists.append({'id': data['ArticleId'], 'data': data['PostTime']})
+            if i > page_num:
                 break
-            j += 1
-            result_list += temp_list
-
-        self.logger.info('总共有%d篇文章' % len(result_list))
-
-        for i in result_list:
+            i = i + 1
+        for l in lists:
             try:
-                self.format_article(i)
+                self.format_article(l)
             except Exception as a:
                 self.logger.error(a)
 
