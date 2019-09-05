@@ -13,9 +13,9 @@ from selenium.webdriver.chrome.options import Options
 
 
 def save_cookies(cookies):
-    jsonCookies = json.dumps(cookies)
+    json_cookies = json.dumps(cookies)
     with open('cookies.json', 'w') as f:
-        f.write(jsonCookies)
+        f.write(json_cookies)
 
 
 # 删除字典数组重复的元素
@@ -192,11 +192,15 @@ class CSDN:
         # 得到Hexo的所需的markdown格式
         string = "---\ntitle: {0}\ndate: {3}\ntags: [{1}]\ncategories:\n{2}\n\n---\n\n<!--more-->\n\n\n\n"
         string = string.format(title, tags, c_str, dic['data'])
+        if self.output[-1] is not '/':
+            self.output += '/'
+        # 创建文件夹
+        if not os.path.exists(self.output):
+            os.mkdir(self.output)
         result = string + markdowncontent
-        file = open(self.output + '{0}.md'.format(title), 'w')
-        file.write(result)
-        file.close()
-        self.logger.info(self.output + '{0}.md'.format(title) + '添加成功！')
+        with open(self.output + '{0}.md'.format(title), 'w') as file:
+            file.write(result)
+            self.logger.info(title + '添加成功！')
         return True
 
     def run(self):
@@ -211,5 +215,6 @@ if __name__ == '__main__':
     if not os.path.exists('cookies.json'):
         csdn.login()
     csdn.init_header()
+    print('请输入文章输出路径')
+    csdn.output = input('文章输出路径:')
     csdn.run()
-
