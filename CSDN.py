@@ -85,7 +85,7 @@ class CSDN:
 
     # 得到文章的markdown
     def format_article(self, dic):
-        html = urllib.request.urlopen('https://mp.csdn.net/mdeditor/getArticle?id={0}'.format(dic['id'])).read()
+        html = urllib.request.urlopen('https://blog-console-api.csdn.net/v1/editor/getArticle?id={0}'.format(dic['id'])).read()
         j = json.loads(html)
         if not j['status']:
             self.logger.error('cookie过期')
